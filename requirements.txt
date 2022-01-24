@@ -1,0 +1,7 @@
+numpy
+pyraf
+astopy
+cosmolopy
+matplotlib
+PyQt5
+SciencePlots
