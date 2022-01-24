@@ -1,6 +1,6 @@
 numpy
 pyraf
-astopy
+astropy
 cosmolopy
 matplotlib
 PyQt5

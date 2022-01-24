@@ -65,13 +65,6 @@ virtualenv mergers -p /usr/local/bin/python3.7
 cd mergers
 source bin/activate
 unset PYTHONPATH
-pip install pyraf
-pip install astropy
-pip install cosmolopy
-pip install numpy
-pip install matplotlib
-pip install SciencePlots
-pip install PyQt5
 git clone git@github.com:davidharvey1986/mergers.git
 cd mergers
 
