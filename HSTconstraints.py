@@ -15,8 +15,8 @@ def HSTconstraints():
     '''
     plot and devise the constraints for the HST proposal
     '''
-#    SimNames = ['vdSIDM','CDM_low','CDM_hi','CDM','SIDM0.1','SIDM0.3','SIDM1'] #GSD.getSimNameList()
-    SimNames = ['CDM','SIDM0.1','SIDM0.3','SIDM1','vdSIDM'] #GSD.getSimNameList()
+
+    SimNames = GSD.getSimNameList()
     fig, axarr = plt.subplots( 1 )
 
     bins=40
@@ -27,32 +27,29 @@ def HSTconstraints():
     totDistSI = np.zeros( (3, nCross))
     totDistSG = np.zeros( (3, nCross))
 
-    crossSection = np.array([0., 0.1, 0.3, 1.0, 1.0])
+    crossSection = np.array([ GSD.getCrossSection(i) for i in SimNames])
 
     for i, iSimName in enumerate(SimNames):
-        finalPickleFile = 'Pickles/finalHalos_'+iSimName+'.pkl'
 
-        if os.path.isfile( finalPickleFile ):
-            iClusterSample = pkl.load(open(finalPickleFile,'rb'),
-                                      encoding='latin1')
-        else:
-            iClusterSample = ClusterSample(iSimName)
+        iClusterSample = ClusterSample(iSimName)
 
-            iClusterSample.extractMergerHalos()
-
-            iClusterSample.CalculateOffsetVectors(nClusters=-1)
-
-            pkl.dump(iClusterSample, open(finalPickleFile, 'wb'))
+        iClusterSample.extractMergerHalos()
         
+        iClusterSample.CalculateOffsetVectors(nClusters=-1)
+
+        #I use this to cut in different options, for example
+        # - unphysical SI
+        # - mass of cluter
+        # - mass of component
         
-        index = iClusterSample.dist_si < 30
-        
+        index = iClusterSample.dist_si < 250
         nClusters = len(index[index])
 
         print("selected %f/%f clusters" % \
                   (nClusters,len(iClusterSample.ClusterMass)))
 
-        #plotBulletVector( iClusterSample )
+        
+        #plotBulletVectors( iClusterSample )
 
         
         SG = getMean(iClusterSample.dist_sg[index] )
@@ -60,26 +57,26 @@ def HSTconstraints():
         DI = getMean(iClusterSample.dist_di[index])
         beta = getMean(iClusterSample.beta[index])
         
-        #plotX = np.linspace(-30.,30., 1000)
-        #axarr[0].plot(plotX, norm.pdf(plotX, meanSI, stdSI*np.sqrt(nClusters)))
         totDistSI[:, i] = SI
         totDistSG[:, i] = SG
         totBeta[:, i] = beta        
 
         
-        print("%s SG mean is %f +/- %0.2f" %  ( iSimName, SG[0], np.mean(SG[1:])))
-        print("%s SI mean is %f +/- %0.2f" %  ( iSimName, SI[0], np.mean(SI[1:])))
-        print("%s DI mean is %f +/- %0.2f" %  ( iSimName, DI[0], np.mean(DI[1:])))
-        print("%s Beta mean is %f +/- %0.2f" %  ( iSimName, beta[0], np.mean(beta[1:])))
-    #totBeta -=  totBeta[0]
+        print("%s SG mean is %f +/- %0.2f" %  \
+              ( iSimName, SG[0], np.mean(SG[1:])))
+        print("%s SI mean is %f +/- %0.2f" %
+              ( iSimName, SI[0], np.mean(SI[1:])))
+        print("%s DI mean is %f +/- %0.2f" %  \
+              ( iSimName, DI[0], np.mean(DI[1:])))
+        print("%s Beta mean is %f +/- %0.2f" %  \
+              ( iSimName, beta[0], np.mean(beta[1:])))
+
 
     #Dump this info in a pickle so i can use it for other scripts
-    pkl.dump([crossSection,totBeta[0,:],totBeta[1,:],totBeta[2,:],totDistSI[0,:], totDistSG[0,:]],\
+    pkl.dump([crossSection,totBeta[0,:], totBeta[1,:], totBeta[2,:],\
+              totDistSI[0,:], totDistSG[0,:]],\
                  open('Pickles/SimulationBetaToCross.pkl','wb'))
-    #plotTrend( crossSection, totDistSI, None, 'Simulations', plotLims=[crossSection[0],3.] )
-    #axarr[0].errorbar( crossSection, totDistSI, yerr=stdTotDistSI, fmt='o')
-    #axarr[0].set_xlim(1e-2, 2.0)
-    #axarr[0].set_xscale('log')
+
     plt.sca(axarr)
     ax = plt.gca()
 
@@ -138,6 +135,7 @@ def HSTconstraints():
     ax.set_xlim(-5e-2,1.75)
     plt.savefig('plots/HSTconstraints.pdf')
     plt.show()
+
 def getMaxLike( y, bins=30 ):
 
     #mean = np.median(x)
@@ -165,7 +163,8 @@ def getMean( x, ax=None ):
     
 
 def getMeanCauchy( x ):
-
+    #Because a gaussian divided by a gaussian is a cauchy
+    #therefor beta should be a cauchy distribution
 
     mean, std = cauchy.fit( x )
     

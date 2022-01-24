@@ -80,17 +80,29 @@ python HSTconstraints.py
 
 
 
-Scripts
+Two Main Scripts
 -------
 
-HSTconstraints.py :
+HSTconstraints.py
+plotBetaAsFunctionMass.py
 
-execution
->> python HSTconstraints.py [DM model]
+Class Files
+-----------
 
-This script is the first one to make sure that all the files are created and found properly. It will go through the different classes, create them, make sure data is there, determine the vectors and plot BETA as a function of cross-section. It doesn't require any inout and if none is given will default to all the simulations.
+clusterClass : a class for an individual cluster from a simulation at a redshift. This gets the component positions for an individual cluster and matches them. Does the majority of the work.
 
->> python pl
+ClusterSample (inside getMergerSample.py): a class that compiles the ensemble of all clusterClasses and carries out calculations on clusterclass and compiles in to vectors.
+
+Other files
+----------
+
+component_extractor.py : uses pysex.py and SEXtractor to get the positions of all peaks in the input fits file.
+
+getAndPlotTrend.py : some simple linear regression scripts
+
+MockedClusterClass.py : creates a fake cluster. Hasnt been tested in a while.
+
+matchMassComponents.py : match two lists of mass components anbd return a matched catalogue
 
 REQUIREMENTS
 -------------
