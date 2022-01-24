@@ -79,7 +79,7 @@ def HSTconstraints():
 
     plt.sca(axarr)
     ax = plt.gca()
-
+    print(totBeta)
     BetaCrossSectionTrend, pEr = \
        getTrend(crossSection,  totBeta[0, :], \
                                 np.min(totBeta[:-1, :],axis=0), \
