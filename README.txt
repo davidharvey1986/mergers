@@ -61,13 +61,15 @@ Each XRAY map is 10Mpc x 10Mpc with 5kpc resolution
 INSTALL
 -------
 
-virtualenv mergers -p /usr/local/bin/python3.7
+#You need to make sure Source Extractor is installed and in the path.
+
+virtualenv mergers -p /usr/bin/python3.7
 cd mergers
 source bin/activate
 unset PYTHONPATH
 git clone git@github.com:davidharvey1986/mergers.git
 cd mergers
-
+pip install -r requirements.txt
 python HSTconstraints.py
 
 

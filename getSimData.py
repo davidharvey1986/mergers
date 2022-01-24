@@ -19,11 +19,11 @@ def getCrossSection( simName ):
 
 def getSimNameList( baryonic='fiducial'):
     if baryonic == 'high':
-       Sims = ['CDM_low','SIDM0.1','SIDM0.3','SIDM1','vdSIDM']
+       Sims = ['CDM_low','SIDM0.1','SIDM0.3','SIDM1']
     elif baryonic == 'high':
-       Sims = ['CDM_hi','SIDM0.1','SIDM0.3','SIDM1','vdSIDM']
+       Sims = ['CDM_hi','SIDM0.1','SIDM0.3','SIDM1']
     else:
-       Sims = ['CDM','SIDM0.1','SIDM0.3','SIDM1','vdSIDM']
+       Sims = ['CDM','SIDM0.1','SIDM0.3','SIDM1']
      
     
     return Sims
