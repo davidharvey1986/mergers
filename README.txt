@@ -30,8 +30,14 @@ Matter Peak       Point          Gas Peak
 
 
 
-dist_sd / SD : SD always referes to the distance between "stars" and "dark matter"
-dist_di / DI : T
+dist_XY : refers to the magnitude of the vector between component X and Y
+S : Stellar Matter
+D : Dark Matter
+G : Gas
+I : Inception point (closest point dark matter is along the SG vector)
+
+Beta = dist_SI / dist_SG (the signal)
+Beta_perp = dist_DI / dist_SG (should be consistent with zero)
 
 
 Simulations
@@ -52,6 +58,28 @@ Maps
 Each TOTAL MATTER and STELLAR MATTER maps are 2 Mpc x 2Mpc with a resolution of 1kpc
 Each XRAY map is 10Mpc x 10Mpc with 5kpc resolution
 
+INSTALL
+-------
+
+virtualenv mergers -p /usr/local/bin/python3.7
+cd mergers
+source bin/activate
+unset PYTHONPATH
+pip install pyraf
+pip install astropy
+pip install cosmolopy
+pip install numpy
+pip install matplotlib
+pip install SciencePlots
+pip install PyQt5
+git clone git@github.com:davidharvey1986/mergers.git
+cd mergers
+
+python HSTconstraints.py
+
+
+
+
 Scripts
 -------
 
@@ -60,7 +88,9 @@ HSTconstraints.py :
 execution
 >> python HSTconstraints.py [DM model]
 
-This script is the first one to make sure that all the files are created and found properly. It will go through the different classes, create them, make sure data is there, determine the vectors and plot BETA as a function of cross-section,
+This script is the first one to make sure that all the files are created and found properly. It will go through the different classes, create them, make sure data is there, determine the vectors and plot BETA as a function of cross-section. It doesn't require any inout and if none is given will default to all the simulations.
+
+>> python pl
 
 REQUIREMENTS
 -------------
