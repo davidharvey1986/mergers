@@ -3,7 +3,6 @@ from astropy.io import fits
 import numpy as np
 import os as os
 import matchMassComponents as mmc
-
 from matplotlib import pyplot as plt
 import pickle as pkl
 from getStellarAndDarkMatter import *
@@ -23,12 +22,9 @@ class clusterClass:
         self.initAllPositions()
         self.GasConcentration = \
           GasConcentration
-        if 'CDM_' in simulation:
-            self.dataDir = \
-                    '/data2/harvey/simulations/BAHAMAS'
-        else:
-            self.dataDir = \
-                    '/data1/harvey/simulations/BAHAMAS'
+
+        self.dataDir = \
+          '/Users/DavidHarvey/Documents/Work/Mergers/sims/BAHAMAS/KetelMount/simulations/BAHAMAS'
         self.clusterInt = clusterInt
         self.simulation = simulation
         self.redshift = redshift
@@ -81,7 +77,7 @@ class clusterClass:
     def  getStellarAndDarkMatter(self):
 
         clusterComponents = \
-          pkl.load(open(self.stellarAndDmPklFile,"rb"))
+          pkl.load(open(self.stellarAndDmPklFile,"rb"), encoding='latin1')
 
         self.xStellarPositions = clusterComponents.xStellarPositions
         self.yStellarPositions = clusterComponents.yStellarPositions
@@ -109,12 +105,9 @@ class clusterClass:
             self.mass = \
                 AllClusters['Mass'][ AllClusters['fof'] == self.clusterInt ][0]
         except:
-            try:
-                self.mass = \
-                    AllClusters['Mass'][ AllClusters['id'] == self.clusterInt ][0]
-            except:
-                print(self.clusterCatalog, self.clusterInt)
-                raise
+            print(self.clusterCatalog, self.clusterInt)
+            raise
+        
     def getClusterMembers( self ):
 
         dtypes =  [('id', object), ('x', float), \
@@ -122,10 +115,10 @@ class clusterClass:
                        ('mass30', float), ('mass100', float)]
 
         if not os.path.isfile(self.GalaxyCat):
-            newDataDir = '/data1/harvey/simulations/BAHAMAS/'
+            newDataDir = '/Users/DavidHarvey/Documents/Work/Mergers/sims/BAHAMAS/KetelMount/harvey/simulations/BAHAMAS'
             self.GalaxyCat =  '/'.join([newDataDir]+self.GalaxyCat.split('/')[-4:])
         if not os.path.isfile(self.GalaxyCat):
-            pdb.set_trace()
+            raise IOError("Mount Ketel to find galaxies")
                 
 
         self.clusterMembers = \
@@ -147,7 +140,7 @@ class clusterClass:
 
         
         if os.path.isfile( pklFile ):
-            gasSources = pkl.load(open(pklFile, "rb"))
+            gasSources = pkl.load(open(pklFile, "rb"), encoding='latin1')
             self.xGasPositions = gasSources.xGasPositions
             self.yGasPositions = gasSources.yGasPositions
         else:
@@ -217,7 +210,7 @@ class clusterClass:
     def checkCluster( self ):
          #Check that there are found gas posisionts
         if type(self.xGasPositions) == float:
-            print('Cannot match since no gas positions available')
+            #print('Cannot match since no gas positions available')
             return -2
 
         #CHeck if those positions are within the field of view of the
@@ -239,7 +232,7 @@ class clusterClass:
         flag = self.checkCluster()
         if  flag < 0:
             return flag
-
+        
         
 
         self.DarkMatterStars = \
@@ -323,7 +316,7 @@ class clusterClass:
         This is taken from trajectory.pro used for my Science paper.                
         
         '''
-        data = self.mergerHalos
+        data = np.array(self.mergerHalos)
         
         self.vector_sg = np.array([data['xGas'] - data['xStellar'], \
                           data['yGas'] -data['yStellar']])
@@ -494,7 +487,7 @@ class clusterClass:
 
 
     def UpdateStellarPositions( self, massCut=0. ):
-        self.getClusterMembers()
+        #self.getClusterMembers()
         massCutIndex = self.clusterMembers['mass100'] > massCut
         self.xStellarPositions = \
           self.clusterMembers['x'][ massCutIndex ]
@@ -523,11 +516,11 @@ class clusterClass:
         and not wihtin the closeCUt (the prior of the BCG)
             
         '''
-        self.getClusterMembers()
+        #self.getClusterMembers()
         massCutIndex = self.clusterMembers['mass100'] > massCut
         BinaryHalo = []
         galaxyMass = self.clusterMembers['mass100']
-        
+        self.mergerHalos = np.array(self.mergerHalos)
         for iHalo in np.arange(len(self.mergerHalos)):
             
             distance = np.sqrt( (self.mergerHalos['xStellar'][iHalo] - \
@@ -574,10 +567,11 @@ class clusterClass:
             % (self.simulation, self.redshift, self.clusterInt)
 
         if os.path.isfile( componentMassPickle ):
-            self.componentMass = pkl.load(open(componentMassPickle, 'rb'))
+            self.componentMass = \
+              pkl.load(open(componentMassPickle, 'rb'), encoding='latin1')
             return
-        #else:
-        #    raise ValueError("Cant find %s" % componentMassPickle)
+        else:
+            raise ValueError("Cant find %s, have i copied it over from KETEL yet?" % componentMassPickle)
         
         totalMatter = fits.open(self.TotalImage)[0].data
         vector = np.arange(totalMatter.shape[0])
@@ -597,3 +591,4 @@ class clusterClass:
         self.componentMass = np.array(self.componentMass)
         
         pkl.dump( self.componentMass, open(componentMassPickle, 'wb'))
+        
