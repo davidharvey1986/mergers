@@ -16,17 +16,34 @@ def getCrossSection( simName ):
         {'CDM':0, 'SIDM0.1':0.1, 'SIDM0.3':0.3, 'SIDM1':1, 'vdSIDM':1}
 
                      
+    return crossSections[simName]
 
-def getSimNameList( baryonic='fiducial'):
-    if baryonic == 'high':
-       Sims = ['CDM_low','SIDM0.1','SIDM0.3','SIDM1']
-    elif baryonic == 'high':
-       Sims = ['CDM_hi','SIDM0.1','SIDM0.3','SIDM1']
-    else:
-       Sims = ['CDM','SIDM0.1','SIDM0.3','SIDM1']
+class getSimNameList:
+
+    def all( baryonic='fiducial'):
+        if baryonic == 'high':
+            Sims = ['CDM_low','SIDM0.1','SIDM0.3','SIDM1','vdSIDM']
+        elif baryonic == 'high':
+            Sims = ['CDM_hi','SIDM0.1','SIDM0.3','SIDM1','vdSIDM']
+        else:
+            Sims = ['CDM','SIDM0.1','SIDM0.3','SIDM1','vdSIDM']
      
     
-    return Sims
+        return Sims
+
+    def forFitting( ):
+
+        Sims = ['CDM','SIDM0.1','SIDM0.3','SIDM1']
+    
+        return Sims
+
+    def allCDM():
+
+        Sims = ['CDM', 'CDM_low', 'CDM_hi']
+
+
+        return Sims
+
 
 
       

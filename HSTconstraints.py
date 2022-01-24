@@ -16,7 +16,7 @@ def HSTconstraints():
     plot and devise the constraints for the HST proposal
     '''
 
-    SimNames = GSD.getSimNameList()
+    SimNames = GSD.getSimNameList.forFitting()
     fig, axarr = plt.subplots( 1 )
 
     bins=40
@@ -79,7 +79,7 @@ def HSTconstraints():
 
     plt.sca(axarr)
     ax = plt.gca()
-    print(totBeta)
+    print(crossSection)
     BetaCrossSectionTrend, pEr = \
        getTrend(crossSection,  totBeta[0, :], \
                                 np.min(totBeta[:-1, :],axis=0), \
